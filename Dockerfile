@@ -1,6 +1,6 @@
 FROM python:3.13-alpine
 
-COPY socks5_server.py /opt/socks5_server.py
+COPY http_proxy.py /opt/http_proxy.py
 COPY entrypoint.sh /usr/local/bin/proxy-entrypoint
 RUN chmod 0755 /usr/local/bin/proxy-entrypoint
 
