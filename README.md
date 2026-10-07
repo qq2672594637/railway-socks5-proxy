@@ -1,27 +1,22 @@
 # Railway Authenticated SOCKS5 Proxy
 
-A password-protected SOCKS5 proxy for Railway. The container also joins Tailscale, but client traffic uses a Railway TCP Proxy.
+A standalone password-protected SOCKS5 proxy. It does **not** use Tailscale; Railway TCP Proxy provides the public endpoint.
 
-## Railway
+## Railway setup
 
 1. Deploy this GitHub repository.
-2. Attach a persistent Volume at `/data`.
-3. Add Variables:
+2. In **Variables**, add:
 
 ```text
-TS_AUTHKEY=<fresh non-ephemeral Tailscale auth key>
-TS_STATE_DIR=/data/tailscale
-TS_AUTH_ONCE=true
-TS_USERSPACE=true
-TS_HOSTNAME=railway-socks5-proxy
 PROXY_USER=<proxy username>
 PROXY_PASSWORD=<long random password>
 PROXY_PORT=1080
 ```
 
-4. Deploy and confirm logs contain `Authenticated SOCKS5 proxy listening`.
-5. Open **Settings -> Networking -> TCP Proxy**, target internal port `1080`.
-6. Use the generated public hostname and external port as a SOCKS5 proxy with `PROXY_USER` and `PROXY_PASSWORD`.
+3. Deploy and wait for the service to start.
+4. Open **Settings → Networking → TCP Proxy**.
+5. Create a TCP Proxy targeting internal port `1080`.
+6. Use Railway's generated hostname and external port as a SOCKS5 proxy with the configured username and password.
 
 Example:
 
@@ -29,4 +24,4 @@ Example:
 curl --proxy socks5h://USER:PASSWORD@HOST:PORT https://api.ipify.org
 ```
 
-Keep the proxy password secret and delete the Railway TCP Proxy when not needed. Do not commit `TS_AUTHKEY` or `PROXY_PASSWORD`.
+No Volume, Tailscale variables, public domain, or Tailscale configuration is required. The Railway TCP Proxy is public, so use a long random password and delete the TCP Proxy when it is not needed.
